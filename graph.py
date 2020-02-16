@@ -9,13 +9,13 @@ if len(sys.argv) == 1:
     print("Please enter a file to plot as an argument")
     quit()
 
-color = []
-title = input("Enter the graph title (leave blank for no title): ")
-xmin = input("Enter x axis minimum (leave blank for no limits): ")
-if xmin != "":
-    xmax = input("Enter x axis maximum: ")
-for csv in range(len(sys.argv)-1):
-    color.append(input(f"Enter color for {sys.argv[csv+1]} (leave blank for default sky blue): "))
+
+# --- defining variables ---
+colors = {"floor":"silver", "symm":"dodgerblue", "diff":"darkorange", "asym":"forestgreen"}
+title = "Power Filter 1A"
+xmin, xmax = 1000, 100000000
+
+
 head_x = ""
 head_y = ""
 x = []
@@ -37,17 +37,15 @@ for csv in range(len(sys.argv)-1):
 fig = plt.figure(figsize=(8,6))
 plot = fig.add_subplot()
 
-for count in range(len(sys.argv)-1):
-    if color[count] != '':
-        plot.plot(x[count], y[count], color[count])
-    else:
-        plot.plot(x[count], y[count])
+for f in range(len(sys.argv)-1):
+    for sort in colors:
+        if sort in sys.argv[f+1]:
+            plot.plot(x[f], y[f], colors[sort])
 
 plot.set_xlabel(head_x)
 plot.set_ylabel(head_y)
 plt.title(title)
-if xmin != '':
-    plt.xlim([int(xmin), int(xmax)])
+plt.xlim([xmin, xmax])
 plt.xscale('log')
 plt.grid(True)
 plt.show()
