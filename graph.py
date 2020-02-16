@@ -12,6 +12,7 @@ if len(sys.argv) == 1:
 
 # --- defining variables ---
 colors = ["silver", "dodgerblue", "darkorange", "forestgreen"]
+labels = ["floor", "symmetrical", "differential", "asymmetrical"]
 title = "Power Filter 1A"
 xmin, xmax = 1000, 100000000
 
@@ -38,7 +39,7 @@ fig = plt.figure(figsize=(8,6))
 plot = fig.add_subplot()
 
 for count in range(len(sys.argv)-1):
-    plot.plot(x[count], y[count], colors[count])
+    plot.plot(x[count], y[count], colors[count], label=labels[count])
 
 plot.set_xlabel(head_x)
 plot.set_ylabel(head_y)
@@ -46,4 +47,5 @@ plt.title(title)
 plt.xlim([xmin, xmax])
 plt.xscale('log')
 plt.grid(True)
+plt.legend(loc="lower right")
 plt.show()
