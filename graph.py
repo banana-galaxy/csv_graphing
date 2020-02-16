@@ -11,7 +11,7 @@ if len(sys.argv) == 1:
 
 
 # --- defining variables ---
-colors = {"floor":"silver", "symm":"dodgerblue", "diff":"darkorange", "asym":"forestgreen"}
+colors = ["silver", "dodgerblue", "darkorange", "forestgreen"]
 title = "Power Filter 1A"
 xmin, xmax = 1000, 100000000
 
@@ -37,10 +37,8 @@ for csv in range(len(sys.argv)-1):
 fig = plt.figure(figsize=(8,6))
 plot = fig.add_subplot()
 
-for f in range(len(sys.argv)-1):
-    for sort in colors:
-        if sort in sys.argv[f+1]:
-            plot.plot(x[f], y[f], colors[sort])
+for count in range(len(sys.argv)-1):
+    plot.plot(x[count], y[count], colors[count])
 
 plot.set_xlabel(head_x)
 plot.set_ylabel(head_y)
