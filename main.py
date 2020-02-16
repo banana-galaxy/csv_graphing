@@ -6,15 +6,13 @@ if len(sys.argv) == 1:
     quit()
 
 files = []
-for f in sys.argv:
-    if f == "main.py":
-        continue
+for f in range(len(sys.argv)):
+    if f != 0:
+        if not os.path.exists(sys.argv[f]):
+            print(f"Could not find {sys.argv[f]}")
+            quit()
 
-    if not os.path.exists(f):
-        print(f"Could not find {f}")
-        quit()
-
-    files.append(f)
+        files.append(sys.argv[f])
 
 data = []
 
