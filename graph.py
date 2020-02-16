@@ -1,4 +1,8 @@
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    print("Please install matplotlib\npip3 install matplotlib")
+    quit()
 import sys
 
 if len(sys.argv) == 1:
