@@ -11,7 +11,7 @@ for f in range(1, len(sys.argv)):
         if "*" in sys.argv[f]:
             template = sys.argv[f].replace("*", "")
             found = False
-            for csv in os.listdir(os.getcwd):
+            for csv in os.listdir(os.getcwd()):
                 if template in csv:
                     files.append(csv)
                     found = True
