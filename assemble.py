@@ -8,8 +8,14 @@ if len(sys.argv) == 1:
 files = []
 for f in range(1, len(sys.argv)):
     if not os.path.exists(sys.argv[f]):
-        print(f"Could not find {sys.argv[f]}")
-        quit()
+        if "*" in sys.argv[f]:
+            template = sys.argv[f].replace("*", "")
+            for csv in os.listdir(os.getcwd):
+                if template in csv:
+                    files.append(csv)
+        else:
+            print(f"Could not find {sys.argv[f]}")
+            quit()
 
     files.append(sys.argv[f])
 
