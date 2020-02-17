@@ -17,9 +17,14 @@ for f in range(1, len(sys.argv)):
     if not os.path.exists(sys.argv[f]):
         if "*" in sys.argv[f]:
             template = sys.argv[f].replace("*", "")
+            found = False
             for csv in os.listdir(os.getcwd):
                 if template in csv:
                     files.append(csv)
+                    found = True
+            if not found:
+                print(f"Could not find files based on {template}\nplease make sure the script and the files are in the same directory")
+                quit()
         else:
             print(f"Could not find {sys.argv[f]}")
             quit()
