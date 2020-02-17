@@ -21,8 +21,8 @@ for f in range(1, len(sys.argv)):
         else:
             print(f"Could not find {sys.argv[f]}")
             quit()
-
-    files.append(sys.argv[f])
+    else:
+        files.append(sys.argv[f])
 
 data = []
 
