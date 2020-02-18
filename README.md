@@ -5,6 +5,8 @@ you will need to install **matplotlib** for **graph.py** to work
 
 ## running
 
+**main.py** does everything described below in the right order and displays a graph, just make sure *all* the files as well as *all* the scripts are *all* in the same directory
+
 **assemble.py** assembles graph data from multiple files into one, you will need to provide the files as arguments, example:
 > python3 assemble.py graph.csv another_graph.csv
 
