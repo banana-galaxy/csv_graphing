@@ -88,7 +88,7 @@ else: # sorting non floor
             if line[0] > 10**(exponent-0.01) and line[0] < 10**exponent:
                 sub_list.append(line)
 
-        # appending median X value to sub_list
+        # appending median Y value to sub_list
         y_list = []
         for line in sub_list:
             y_list.append(line[1])
