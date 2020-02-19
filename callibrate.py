@@ -20,7 +20,7 @@ def callibrate(args):
                     print(f"Could not find files based on {template}\nplease make sure the script and the files are in the same directory")
                     quit()
             else:
-                print(f"Could not find {args[f]}")
+                print(f"Callibrate Could not find {args[f]}")
                 quit()
         else:
             files.append(args[f])
