@@ -8,6 +8,9 @@ you will need to install **matplotlib** for **graph.py** to work
 **main.py** does everything described below in the right order and displays a graph, just make sure *all* the files as well as *all* the scripts are *all* in the same directory. Then simply do:
 > python3 main.py
 
+note this will create a compressed/smoothed out graph, if you want to see the full data add in "full" as an argument:
+> python3 main.py full
+
 ***
 
 **assemble.py** assembles graph data from multiple files into one, you will need to provide the files as arguments, example:
@@ -23,3 +26,7 @@ note the star at the end of the template, that's to indicate we've entered a tem
 
 **graph.py** makes a graph with lines plotted from given files, example:
 > python3 graph.py output.csv output1.csv
+
+## updates
+
+02/18/2020: main.py now automatically compresses/smoothes out the graph, you can add "full" as an argument to show an uncompressed graph
