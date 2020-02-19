@@ -32,10 +32,9 @@ for addition in file_additions:
             os.remove(f)
 
 for f in os.listdir(os.getcwd()):
-    for csv in files:
-        if csv in f and f.endswith(".csv"):
-            if not "assemble" in f:
-                files[csv].append(f)
+    for csv in range(len(names)):
+        if names[csv] in f and f.endswith(".csv"):
+            files[names[csv]].append(f)
 
 if not compress:
     for f in names:
