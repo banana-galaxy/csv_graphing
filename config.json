@@ -1,0 +1,34 @@
+{
+    "title":"Power Filter",
+    "x_name":"Frequency, Hz",
+    "y_name":"Response, db",
+    "x_limits_status":1,
+    "x_min":1000,
+    "x_max":100000000,
+    "y_limits_status":0,
+    "y_min":0,
+    "y_max":0,
+    "compressed":1,
+    "count_per_decade_floor":10,
+    "count_per_decade":30,
+    "inverted":0,
+    "data":{
+        "tr_cal_":"",
+        "tr_floor_":{
+            "name":"floor",
+            "color":"silver"
+        },
+        "comm_":{
+            "name":"common",
+            "color":"dodgerblue"
+        },
+        "diff_":{
+            "name":"differential",
+            "color":"darkorange"
+        },
+        "unsym_":{
+            "name":"unsymmetrical",
+            "color":"forestgreen"
+        }
+    }
+}
