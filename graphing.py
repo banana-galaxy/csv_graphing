@@ -60,43 +60,65 @@ for key in range(1, len(keys)): # calibrate
     for line in range(len(data[keys[key]])):
         data[keys[key]][line][1] = data[keys[key]][line][1] - data[keys[0]][line][1]
 
-for key in keys:
-    print(key)
+#for key in keys:
+#    print(key)
 
 if config["compressed"]:
 
     for dtype in range(1, len(keys)): # cycle through data types
         bins = [] # new cycle, creating bins
-        graph_range = log(config["x_max"], 10) - log(config["x_min"], 10) # getting graph range
+        graph_range = int(log(config["x_max"], 10) - log(config["x_min"], 10)) # getting graph range
         if keys[dtype] == "tr_floor_": # adjusting graph range to match # bins according to data type
             graph_range = graph_range*config["count_per_decade_floor"]
+            cpd = config["count_per_decade_floor"]
+            compress_floor_bool = True
         else:
             graph_range = graph_range*config["count_per_decade"]
+            cpd = config["count_per_decade"]
+            compress_floor_bool = False
         
         for i in range(graph_range): # creating a bin per unit in range
             bins.append([])
 
         bins.append([]) # creating additional bin to compensate for #0
         
-        for point in range(data[keys[dtype]]):
-            #pass
-            pass
+        for point in data[keys[dtype]]: # filling the bins up
+            index = int(cpd*(log(point[0], 10) - log(config["x_min"], 10)))
+            if index <= 0:
+                pass
+            else:
+                bins[index].append(point)
+
+        result = [] 
+        for binn in bins:
+            if compress_floor_bool:
+                result.append(compress_floor(binn))
+            else:
+                result.append(compress(binn))
+        data[keys[dtype]] = result
 
 if config["inverted"]:
     for dtype in range(1, len(keys)):
         for line in range(len(data[keys[dtype]])):
-            data[keys[dtype]][line][1] = -data[keys[dtype]][line][1]
+            try:
+                data[keys[dtype]][line][1] = -data[keys[dtype]][line][1]
+            except TypeError:
+                pass
 
 fig = plt.figure(figsize=(8,6))
 plot = fig.add_subplot()
 
 for dtype in range(1, len(keys)):
-    x = []
-    y = []
-    for line in data[keys[dtype]]:
-        x.append(line[0])
-        y.append(line[1])
-    plot.plot(x, y, config["data"][keys[dtype]]["color"], label=config["data"][keys[dtype]]["name"])
+    if config["data"][keys[dtype]]["show"]:
+        x = []
+        y = []
+        for line in data[keys[dtype]]:
+            try:
+                x.append(line[0])
+                y.append(line[1])
+            except:
+                pass
+        plot.plot(x, y, config["data"][keys[dtype]]["color"], label=config["data"][keys[dtype]]["name"])
 
 plot.set_xlabel(config["x_name"])
 plot.set_ylabel(config["y_name"])
