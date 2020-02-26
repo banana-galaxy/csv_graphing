@@ -5,6 +5,10 @@ you will need to install **matplotlib** for **graph.py** to work
 
 ## running
 
+**graphing.py** and **config.json** are now available to do all the work. You only need these two files along with all the data files in one directory, then change the config to your liking and run graphing.py :)
+
+***
+
 **main.py** does everything described below in the right order and displays a graph, just make sure *all* the files as well as *all* the scripts are *all* in the same directory. Then simply do:
 > python3 main.py
 
@@ -30,3 +34,5 @@ note the star at the end of the template, that's to indicate we've entered a tem
 ## updates
 
 02/18/2020: main.py now automatically compresses/smoothes out the graph, you can add "full" as an argument to show an uncompressed graph
+
+02/26/2020: After quite some time of debugging graphing.py and config.json are now available and do all the work
