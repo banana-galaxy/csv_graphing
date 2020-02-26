@@ -8,7 +8,7 @@
     "y_limits_status":0,
     "y_min":0,
     "y_max":0,
-    "compressed":1,
+    "compressed":0,
     "count_per_decade_floor":10,
     "count_per_decade":30,
     "inverted":0,
@@ -16,19 +16,23 @@
         "tr_cal_":"",
         "tr_floor_":{
             "name":"floor",
-            "color":"silver"
+            "color":"silver",
+            "show":1
         },
         "comm_":{
             "name":"common",
-            "color":"dodgerblue"
+            "color":"dodgerblue",
+            "show":1
         },
         "diff_":{
             "name":"differential",
-            "color":"darkorange"
+            "color":"darkorange",
+            "show":1
         },
         "unsym_":{
             "name":"unsymmetrical",
-            "color":"forestgreen"
+            "color":"forestgreen",
+            "show":1
         }
     }
 }
