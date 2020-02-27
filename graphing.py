@@ -41,13 +41,22 @@ for dtype in range(len(keys)): # for each data type
     for f in os.listdir(os.getcwd()): # for each file
         if keys[dtype] in f:
             with open(f, "r") as csv:
-                csv = csv.read().split("\n")
-                for line in range(1, len(csv)-1):
-                    splitted = csv[line].split(",")
+                #csv = csv.read().split("\n")
+                #for line in range(1, len(csv)-1):
+                for line in csv:
+                    if line.endswith("\n\r"):
+                        line.replace("\n\r", "")
+                    elif line.endswith("\n"):
+                        line.replace("\n", "")
+                    #splitted = csv[line].split(",")
+                    splitted = line.split(",")
                     splitted.pop(2)
-                    for num in range(len(splitted)):
-                        splitted[num] = float(splitted[num])
-                    data[keys[dtype]].append(splitted)
+                    try:
+                        for num in range(len(splitted)):
+                            splitted[num] = float(splitted[num])
+                        data[keys[dtype]].append(splitted)
+                    except:
+                        pass
 
 for key in keys: # sort data type list by the x values
     data[key].sort()
