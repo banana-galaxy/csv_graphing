@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json, os
+import json, os, csv
 from numpy import arange
 from math import log
 import matplotlib.pyplot as plt
@@ -40,24 +40,36 @@ for dtype in range(len(keys)): # for each data type
 
     for f in os.listdir(os.getcwd()): # for each file
         if keys[dtype] in f:
-            with open(f, "r", encoding="utf8") as csv:
+            with open(f, 'r') as csv_file:
                 #csv = csv.read().split("\n")
                 #for line in range(1, len(csv)-1):
-                for line in csv:
-                    if line.endswith("\n\r"):
-                        line.replace("\n\r", "")
-                    elif line.endswith("\n"):
-                        line.replace("\n", "")
+                csv_reader = csv.reader(csv_file, delimiter=',')
+                line_count = 0
+                for line in csv_reader:
+                    #if line.endswith("\n\r"):
+                    #    line.replace("\n\r", "")
+                    #elif line.endswith("\n"):
+                    #    line.replace("\n", "")
                     #splitted = csv[line].split(",")
-                    splitted = line.split(",")
-                    if len(splitted) == 3:
-                        splitted.pop(2)
-                    try:
-                        for num in range(len(splitted)):
-                            splitted[num] = float(splitted[num])
-                        data[keys[dtype]].append(splitted)
-                    except:
-                        pass
+                    #splitted = line.split(",")
+                    #if len(splitted) == 3:
+                    #    splitted.pop(2)
+                    #try:
+                    #    for num in range(len(splitted)):
+                    #        splitted[num] = float(splitted[num])
+                    #    data[keys[dtype]].append(splitted)
+                    #except:
+                    #    pass
+                    if line_count == 0:
+                        line_count += 1
+                        continue
+                    if len(line) == 3:
+                        line.pop(2)
+                    for num in range(len(line)):
+                        line[num] = float(line[num])
+                    data[keys[dtype]].append(line)
+                    line_count += 1
+
 
 for key in keys: # sort data type list by the x values
     data[key].sort()
