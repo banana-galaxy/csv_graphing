@@ -99,7 +99,7 @@ if config["compressed"]:
 
     def bins_sort(data, sort_type, dtype):
         bins = [] # new cycle, creating bins
-        graph_range = int(log(config["x_max"], 10) - log(config["x_min"], 10)) # getting graph range
+        graph_range = int(log(config["x_max_data"], 10) - log(config["x_min_data"], 10)) # getting graph range
         if dtype == "tr_floor_": # adjusting graph range to match # bins according to data type
             graph_range = graph_range*config["count_per_decade_floor"]
             cpd = config["count_per_decade_floor"]
@@ -122,13 +122,15 @@ if config["compressed"]:
             try:
                 if config["x_limits_status_data"]:
                     index = int(cpd*(log(point[0], 10) - log(config["x_min_data"], 10)))
+                    #if index > log(config["x_max_data"], 10):
+                    #    break
                 else:
                     index = int(cpd*log(point[0], 10))
                 if index <= 0:
                     pass
                 else:
                     bins[index].append(point)
-            except TypeError:
+            except (TypeError, IndexError):
                 pass
 
         result = [] 
