@@ -6,13 +6,22 @@ import matplotlib.pyplot as plt
 
 
 
-def compress(sub_list):
+def compress_median(sub_list):
     y_list = []
     for point in sub_list:
         y_list.append(point[1])
     y_list.sort()
     for point in sub_list:
         if point[1] == y_list[int((len(y_list)-1)/2)]:
+            return point
+
+def compress_max(sub_list):
+    y_list = []
+    for point in sub_list:
+        y_list.append(point[1])
+    y_list.sort()
+    for point in sub_list:
+        if point[1] == y_list[len(y_list)-1]:
             return point
 
 
@@ -87,16 +96,21 @@ for key in range(1, len(keys)): # calibrate
 
 if config["compressed"]:
 
-    for dtype in range(1, len(keys)): # cycle through data types
+
+    def bins_sort(data, sort_type, dtype):
         bins = [] # new cycle, creating bins
         graph_range = int(log(config["x_max"], 10) - log(config["x_min"], 10)) # getting graph range
-        if keys[dtype] == "tr_floor_": # adjusting graph range to match # bins according to data type
+        if dtype == "tr_floor_": # adjusting graph range to match # bins according to data type
             graph_range = graph_range*config["count_per_decade_floor"]
             cpd = config["count_per_decade_floor"]
             compress_floor_bool = True
         else:
-            graph_range = graph_range*config["count_per_decade"]
-            cpd = config["count_per_decade"]
+            if sort_type == "normal":
+                graph_range = graph_range*config["count_per_decade_median"]
+                cpd = config["count_per_decade_median"]
+            elif sort_type == "max":
+                graph_range = graph_range*config["count_per_decade_max"]
+                cpd = config["count_per_decade_max"]
             compress_floor_bool = False
         
         for i in range(graph_range): # creating a bin per unit in range
@@ -104,19 +118,38 @@ if config["compressed"]:
 
         bins.append([]) # creating additional bin to compensate for #0
         
-        for point in data[keys[dtype]]: # filling the bins up
-            index = int(cpd*(log(point[0], 10) - log(config["x_min"], 10)))
-            if index <= 0:
+        for point in data: # filling the bins up
+            try:
+                if config["x_limits_status"]:
+                    index = int(cpd*(log(point[0], 10) - log(config["x_min"], 10)))
+                else:
+                    index = int(cpd*log(point[0], 10))
+                if index <= 0:
+                    pass
+                else:
+                    bins[index].append(point)
+            except TypeError:
                 pass
-            else:
-                bins[index].append(point)
 
         result = [] 
         for binn in bins:
             if compress_floor_bool:
                 result.append(compress_floor(binn))
             else:
-                result.append(compress(binn))
+                if sort_type == "normal":
+                    result.append(compress_median(binn))
+                elif sort_type == "max":
+                    result.append(compress_max(binn))
+        return result
+
+
+    for dtype in range(1, len(keys)): # cycle through data types
+        if keys[dtype] == "tr_floor_":
+            result = bins_sort(data[keys[dtype]], "normal", keys[dtype])
+        else:
+            medium = bins_sort(data[keys[dtype]], "normal", keys[dtype])
+            result = bins_sort(medium, "max", keys[dtype])
+        
         data[keys[dtype]] = result
 
 if config["inverted"]:
@@ -145,6 +178,8 @@ for dtype in range(1, len(keys)):
 plot.set_xlabel(config["x_name"])
 plot.set_ylabel(config["y_name"])
 plt.title(config["title"])
+if config["x_limits_status"]:
+    plt.xlim([config["x_min"], config["x_max"]])
 if config["y_limits_status"]:
     plt.ylim([config["y_min"], config["y_max"]])
 plt.xscale('log')
