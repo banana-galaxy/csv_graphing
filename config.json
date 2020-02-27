@@ -1,5 +1,6 @@
 {
     "title":"Power Filter",
+    "size":[8, 6],
     "x_name":"Frequency, Hz",
     "y_name":"Response, db",
     "x_limits_status_data":1,
