@@ -39,7 +39,7 @@ for dtype in range(len(keys)): # for each data type
     data[keys[dtype]] = []
 
     for f in os.listdir(os.getcwd()): # for each file
-        if keys[dtype] in f:
+        if keys[dtype] in f and ".csv" in f:
             with open(f, 'r') as csv_file:
                 #csv = csv.read().split("\n")
                 #for line in range(1, len(csv)-1):
