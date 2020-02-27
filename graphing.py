@@ -185,9 +185,12 @@ if config["x_limits_status_graph"]:
 if config["y_limits_status"]:
     plt.ylim([config["y_min"], config["y_max"]])
 plt.xscale('log')
+plt.minorticks_on()
 plt.grid(True, which="major", color="grey")
-plt.grid(True, which="minor", color="gainsboro")
+plt.grid(True, which="minor", axis='both', color="gainsboro")
 plt.legend(loc="lower right")
+name = config["title"].replace(" ", "_")
+plt.savefig(f'{name}.png')
 plt.show()
 
 #print(data[keys[2]])
