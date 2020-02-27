@@ -162,7 +162,7 @@ if config["inverted"]:
             except TypeError:
                 pass
 
-fig = plt.figure(figsize=(8,6))
+fig = plt.figure(figsize=config["size"])
 plot = fig.add_subplot()
 
 for dtype in range(1, len(keys)):
