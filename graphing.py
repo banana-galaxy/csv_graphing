@@ -120,8 +120,8 @@ if config["compressed"]:
         
         for point in data: # filling the bins up
             try:
-                if config["x_limits_status"]:
-                    index = int(cpd*(log(point[0], 10) - log(config["x_min"], 10)))
+                if config["x_limits_status_data"]:
+                    index = int(cpd*(log(point[0], 10) - log(config["x_min_data"], 10)))
                 else:
                     index = int(cpd*log(point[0], 10))
                 if index <= 0:
@@ -178,8 +178,8 @@ for dtype in range(1, len(keys)):
 plot.set_xlabel(config["x_name"])
 plot.set_ylabel(config["y_name"])
 plt.title(config["title"])
-if config["x_limits_status"]:
-    plt.xlim([config["x_min"], config["x_max"]])
+if config["x_limits_status_graph"]:
+    plt.xlim([config["x_min_graph"], config["x_max_graph"]])
 if config["y_limits_status"]:
     plt.ylim([config["y_min"], config["y_max"]])
 plt.xscale('log')
