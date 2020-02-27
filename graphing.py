@@ -40,7 +40,7 @@ for dtype in range(len(keys)): # for each data type
 
     for f in os.listdir(os.getcwd()): # for each file
         if keys[dtype] in f:
-            with open(f, "r") as csv:
+            with open(f, "r", encoding="utf8") as csv:
                 #csv = csv.read().split("\n")
                 #for line in range(1, len(csv)-1):
                 for line in csv:
