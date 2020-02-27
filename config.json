@@ -10,7 +10,8 @@
     "y_max":0,
     "compressed":0,
     "count_per_decade_floor":10,
-    "count_per_decade":30,
+    "count_per_decade_median":100,
+    "count_per_decade_max":10,
     "inverted":0,
     "data":{
         "tr_cal_":"",
