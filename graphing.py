@@ -50,7 +50,8 @@ for dtype in range(len(keys)): # for each data type
                         line.replace("\n", "")
                     #splitted = csv[line].split(",")
                     splitted = line.split(",")
-                    splitted.pop(2)
+                    if len(splitted) == 3:
+                        splitted.pop(2)
                     try:
                         for num in range(len(splitted)):
                             splitted[num] = float(splitted[num])
