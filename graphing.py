@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
+
 import json, os, csv
 from numpy import arange
 from math import log
 import matplotlib.pyplot as plt
+import numpy as np
+from scipy.interpolate import spline
 
+#TODO:
+# --> Spline Approximation; could be sin(x)/x or else, but let's make it soft
+# https://stackoverflow.com/questions/5283649/plot-smooth-line-with-pyplot
+# https://docs.scipy.org/doc/scipy/reference/tutorial/interpolate.html#multivariate-data-interpolation-griddata
+#     Challenge: non-uniform x data points
+# https://stackoverflow.com/questions/3242382/interpolation-over-an-irregular-grid
 
 
 def compress_median(sub_list):
@@ -25,118 +34,94 @@ def compress_max(sub_list):
             return point
 
 
-def compress_floor(sub_list):
-    y_list = []
-    for point in sub_list:
-        y_list.append(point[1])
-    y_list.sort()
-    for point in sub_list:
-        if point[1] == y_list[len(y_list)-1]:
-            return point
-
 
 config = {}
 with open("config.json", "r") as f:
     config = json.load(f)
 
+#print (config)
+
 keys = []
 for dtype in config["data"]:
     keys.append(dtype)
 
-data = {}
+g_data = {} # global data array
+
 for dtype in range(len(keys)): # for each data type
-    data[keys[dtype]] = []
+    g_data[keys[dtype]] = []
 
     for f in os.listdir(os.getcwd()): # for each file
         if keys[dtype] in f and ".csv" in f:
             with open(f, 'r') as csv_file:
-                #csv = csv.read().split("\n")
-                #for line in range(1, len(csv)-1):
                 csv_reader = csv.reader(csv_file, delimiter=',')
                 line_count = 0
                 for line in csv_reader:
-                    #if line.endswith("\n\r"):
-                    #    line.replace("\n\r", "")
-                    #elif line.endswith("\n"):
-                    #    line.replace("\n", "")
-                    #splitted = csv[line].split(",")
-                    #splitted = line.split(",")
-                    #if len(splitted) == 3:
-                    #    splitted.pop(2)
-                    #try:
-                    #    for num in range(len(splitted)):
-                    #        splitted[num] = float(splitted[num])
-                    #    data[keys[dtype]].append(splitted)
-                    #except:
-                    #    pass
-                    if line_count == 0:
-                        line_count += 1
-                        continue
-                    if len(line) == 3:
-                        line.pop(2)
-                    for num in range(len(line)):
-                        line[num] = float(line[num])
-                    data[keys[dtype]].append(line)
+                    if 0 < line_count:
+                        row = [] # never use loop variable for anything else inside the same loop
+                        row.append(float(line[0]))
+                        row.append(float(line[1]))
+                        g_data[keys[dtype]].append(row)
+                    #print (line, row); exit()
                     line_count += 1
 
 
 for key in keys: # sort data type list by the x values
-    data[key].sort()
+    g_data[key].sort()
 
-if data[keys[0]] == []:
+# print(g_data[keys[1]]) # debug only
+
+if g_data[keys[0]] == []:
     print("No calibrational files found, please make sure they are in the same directory")
     quit()
 
 for key in range(1, len(keys)): # calibrate
-    for line in range(len(data[keys[key]])):
-        data[keys[key]][line][1] = data[keys[key]][line][1] - data[keys[0]][line][1]
+    for line in range(len(g_data[keys[key]])):
+        g_data[keys[key]][line][1] = g_data[keys[key]][line][1] - g_data[keys[0]][line][1]
 
-#for key in keys:
-#    print(key)
+# print(keys)
 
 if config["compressed"]:
 
 
-    def bins_sort(data, sort_type, dtype):
+    def bins_sort(dataset, sort_type, dtype): # try not to reuse global names within functions to avoid possible confusions
         bins = [] # new cycle, creating bins
-        graph_range = int(log(config["x_max_data"], 10) - log(config["x_min_data"], 10)) # getting graph range
+        if config["x_limits_data"]:
+            graph_range = int(log(config["x_max_data"], 10) - log(config["x_min_data"], 10)) # getting graph range
+        else:
+            graph_range = 8 # x-axis (logarithmic) - from 0 to 10^8
         if dtype == "tr_floor_": # adjusting graph range to match # bins according to data type
-            graph_range = graph_range*config["count_per_decade_floor"]
             cpd = config["count_per_decade_floor"]
             compress_floor_bool = True
         else:
             if sort_type == "normal":
-                graph_range = graph_range*config["count_per_decade_median"]
                 cpd = config["count_per_decade_median"]
             elif sort_type == "max":
-                graph_range = graph_range*config["count_per_decade_max"]
                 cpd = config["count_per_decade_max"]
             compress_floor_bool = False
+        graph_range = graph_range*cpd
         
         for i in range(graph_range): # creating a bin per unit in range
             bins.append([])
-
-        bins.append([]) # creating additional bin to compensate for #0
         
-        for point in data: # filling the bins up
+        for point in dataset: # filling the bins up
             try:
-                if config["x_limits_status_data"]:
+                if point is None: # let's avoid execptions if possible! But how did that None happened in the first place?
+                    continue      # exeptions is the last resort when you DON'T KNOW what's wrong
+                                  # or the code that throws it is not yours to fix
+                if config["x_limits_data"]:
                     index = int(cpd*(log(point[0], 10) - log(config["x_min_data"], 10)))
-                    #if index > log(config["x_max_data"], 10):
-                    #    break
                 else:
                     index = int(cpd*log(point[0], 10))
-                if index <= 0:
-                    pass
-                else:
+                if 0 <= index and len(bins) > index: # let's avoid execptions if possible!
                     bins[index].append(point)
             except (TypeError, IndexError):
-                pass
+                print("!!!", dtype, point); exit()
+                pass # here we throw some data out without knowing what or why was that
 
-        result = [] 
+        result = []
         for binn in bins:
             if compress_floor_bool:
-                result.append(compress_floor(binn))
+                result.append(compress_max(binn))
             else:
                 if sort_type == "normal":
                     result.append(compress_median(binn))
@@ -147,18 +132,18 @@ if config["compressed"]:
 
     for dtype in range(1, len(keys)): # cycle through data types
         if keys[dtype] == "tr_floor_":
-            result = bins_sort(data[keys[dtype]], "normal", keys[dtype])
+            result = bins_sort(g_data[keys[dtype]], "normal", keys[dtype])
         else:
-            medium = bins_sort(data[keys[dtype]], "normal", keys[dtype])
+            medium = bins_sort(g_data[keys[dtype]], "normal", keys[dtype])
             result = bins_sort(medium, "max", keys[dtype])
         
-        data[keys[dtype]] = result
+        g_data[keys[dtype]] = result
 
 if config["inverted"]:
     for dtype in range(1, len(keys)):
-        for line in range(len(data[keys[dtype]])):
+        for line in range(len(g_data[keys[dtype]])):
             try:
-                data[keys[dtype]][line][1] = -data[keys[dtype]][line][1]
+                g_data[keys[dtype]][line][1] = -g_data[keys[dtype]][line][1]
             except TypeError:
                 pass
 
@@ -169,7 +154,7 @@ for dtype in range(1, len(keys)):
     if config["data"][keys[dtype]]["show"]:
         x = []
         y = []
-        for line in data[keys[dtype]]:
+        for line in g_data[keys[dtype]]:
             try:
                 x.append(line[0])
                 y.append(line[1])
@@ -180,9 +165,9 @@ for dtype in range(1, len(keys)):
 plot.set_xlabel(config["x_name"])
 plot.set_ylabel(config["y_name"])
 plt.title(config["title"])
-if config["x_limits_status_graph"]:
+if config["x_limits_graph"]:
     plt.xlim([config["x_min_graph"], config["x_max_graph"]])
-if config["y_limits_status"]:
+if config["y_limits"]:
     plt.ylim([config["y_min"], config["y_max"]])
 plt.xscale('log')
 plt.minorticks_on()
@@ -193,4 +178,4 @@ name = config["title"].replace(" ", "_")
 plt.savefig(f'{name}.png')
 plt.show()
 
-#print(data[keys[2]])
+print(g_data[keys[1]])
