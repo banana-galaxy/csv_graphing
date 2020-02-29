@@ -5,7 +5,7 @@ from numpy import arange
 from math import log
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.interpolate import spline
+from scipy.interpolate import BSpline
 
 #TODO:
 # --> Spline Approximation; could be sin(x)/x or else, but let's make it soft
