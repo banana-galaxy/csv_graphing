@@ -17,6 +17,7 @@
     "count_per_decade_floor":5,
     "count_per_decade_median":300,
     "count_per_decade_max":8,
+    "interpolation":0,
     "data":{
         "tr_cal_":"",
         "tr_floor_":{

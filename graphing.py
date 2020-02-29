@@ -5,13 +5,13 @@ from numpy import arange
 from math import log
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.interpolate import BSpline
+from scipy.interpolate import make_interp_spline, BSpline
 
 #TODO:
-# --> Spline Approximation; could be sin(x)/x or else, but let's make it soft
+# --> Interpolation
+#   Current implementation is unsatisfactory, based upon:
 # https://stackoverflow.com/questions/5283649/plot-smooth-line-with-pyplot
-# https://docs.scipy.org/doc/scipy/reference/tutorial/interpolate.html#multivariate-data-interpolation-griddata
-#     Challenge: non-uniform x data points
+#   Challenge: logarithmic scale. To check:
 # https://stackoverflow.com/questions/3242382/interpolation-over-an-irregular-grid
 
 
@@ -160,7 +160,15 @@ for dtype in range(1, len(keys)):
                 y.append(line[1])
             except:
                 pass
-        plot.plot(x, y, config["data"][keys[dtype]]["color"], label=config["data"][keys[dtype]]["name"])
+        if config["interpolation"]:
+            xn = np.array(x)
+            yn = np.array(y)
+            xnew = np.linspace(xn.min(), xn.max(), 300) # 300 represents number of points to make between T.min and T.max
+            spl = make_interp_spline(xn, yn, k=3)  # type: BSpline
+            ynew = spl(xnew)
+            plot.plot(xnew, ynew, config["data"][keys[dtype]]["color"], label=config["data"][keys[dtype]]["name"])
+        else:
+            plot.plot(x, y, config["data"][keys[dtype]]["color"], label=config["data"][keys[dtype]]["name"])
 
 plot.set_xlabel(config["x_name"])
 plot.set_ylabel(config["y_name"])
@@ -178,4 +186,4 @@ name = config["title"].replace(" ", "_")
 plt.savefig(f'{name}.png')
 plt.show()
 
-print(g_data[keys[1]])
+#print(g_data[keys[1]])
