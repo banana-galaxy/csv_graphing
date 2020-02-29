@@ -1,8 +1,8 @@
 {
-    "title":"MyElectrons Power Filter 2A",
+    "title":"s21 MyElectrons Power Filter 2A",
     "size":[12, 8],
     "x_name":"Frequency, Hz",
-    "y_name":"Insertion Loss, db",
+    "y_name":"s21, db",
     "x_limits_data":1,
     "x_min_data":6000,
     "x_max_data":100000000,
@@ -10,9 +10,9 @@
     "x_min_graph":4000,
     "x_max_graph":100000000,
     "y_limits":1,
-    "y_min":0,
-    "y_max":105,
-    "inverted":1,
+    "y_min":-110,
+    "y_max":0,
+    "inverted":0,
     "compressed":1,
     "count_per_decade_floor":5,
     "count_per_decade":17,
@@ -22,16 +22,16 @@
         "tr_floor_":{
             "name":"noise floor",
             "color":"silver",
-            "show":0
+            "show":1
         },
         "comm_":{
             "name":"common",
-            "color":"mediumblue",
+            "color":"dodgerblue",
             "show":1
         },
         "diff_":{
             "name":"differential",
-            "color":"chocolate",
+            "color":"darkorange",
             "show":1
         },
         "unsym_":{
