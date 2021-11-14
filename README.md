@@ -63,5 +63,5 @@ Once you are done you can type `deactivate` to deactivate the venv.
 
 ## Updates
 
-2020-02-29: First Release
+2020-02-29: First Release\
 2021-11-14: Update README
