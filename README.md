@@ -49,7 +49,7 @@ We create a graph with `graphing.py`.\
 - The file prefixes to look for, for each measurement type. Along with how to display them on the graph.
 - Whether or not you want the graph to be "interactive"
 
-`config.json` is a sample configuration file you can use as a template. By default `graphing.py` uses `config.json` as its configuration file, if you want to use something else, specify the name of the file as a command line parameter. For example:\
+`config.json`, `config2.json` and, `config3.json` are sample configuration files you can use as templates. By default `graphing.py` uses `config.json` as its configuration file, if you want to use something else, specify the name of the file as a command line parameter. For example:\
 `python3 graphing.py my_config.json`
 
 Several configuration files can be given as command line parameters and will be processed one by one resulting in different graphs based on the information in them. Example:
