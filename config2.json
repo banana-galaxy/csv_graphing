@@ -18,23 +18,29 @@
     "count_per_decade":17,
     "interpolation":1,
     "data":{
-        "tr_cal_":"",
-        "tr_floor_":{
+        "cal":{
+            "file_name":"tr_cal_"
+        },
+        "floor":{
+            "file_name":"tr_floor_",
             "name":"noise floor",
             "color":"silver",
             "show":1
         },
-        "comm_":{
+        "comm":{
+            "file_name":"comm_",
             "name":"common",
             "color":"dodgerblue",
             "show":1
         },
-        "diff_":{
+        "diff":{
+            "file_name":"diff_",
             "name":"differential",
             "color":"darkorange",
             "show":1
         },
-        "unsym_":{
+        "unsym":{
+            "file_name":"unsym_",
             "name":"unsymmetrical",
             "color":"darkseagreen",
             "show":1
