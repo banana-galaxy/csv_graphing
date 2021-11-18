@@ -17,10 +17,9 @@
     "count_per_decade_floor":5,
     "count_per_decade":17,
     "interpolation":1,
+    "main_dir":"all",
+    "cal_dir":"cal",
     "data":{
-        "cal":{
-            "file_name":"tr_cal_"
-        },
         "floor":{
             "file_name":"tr_floor_",
             "name":"noise floor",
