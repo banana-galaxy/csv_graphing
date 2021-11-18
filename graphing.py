@@ -77,6 +77,8 @@ def bins_sort(dataset, dtype, config_file): # try not to reuse global names with
 
 def main_plotter(config_file): # all data processing and plotting for one configuration file
 
+    main_path = os.path.realpath(__file__)
+
     config = {}
     with open(config_file, "r") as f:
         config = json.load(f)
@@ -87,22 +89,37 @@ def main_plotter(config_file): # all data processing and plotting for one config
 
     g_data = {} # global data array
 
-    for dtype in range(len(keys)): # for each data type
-        g_data[keys[dtype]] = []
+    cal_dir = os.path.join(os.path.split(main_path)[0], config['cal_dir'])
+    g_data['cal'] = []
+    for file in os.listdir(cal_dir):
+        with open(os.path.join(cal_dir, file)) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            line_count = 0
+            for line in csv_reader:
+                if 0 < line_count:
+                    g_data['cal'].append([float(line[0]), float(line[1])])
+                line_count+=1
+    
+    all_dir = os.path.join(os.path.split(main_path)[0],  config['main_dir'])
 
-        for f in os.listdir(os.getcwd()): # for each file
-            if config['data'][keys[dtype]]['file_name'] in f and ".csv" in f:
-                with open(f, 'r') as csv_file:
-                    csv_reader = csv.reader(csv_file, delimiter=',')
-                    line_count = 0
-                    for line in csv_reader:
-                        if 0 < line_count:
-                            row = [] # never use loop variable for anything else inside the same loop
-                            row.append(float(line[0]))
-                            row.append(float(line[1]))
-                            g_data[keys[dtype]].append(row)
-                        #print (line, row); exit()
-                        line_count += 1
+
+    for dtype in keys:
+        g_data[dtype] = []
+        file_base_name = config['data'][dtype]['file_name']
+
+        files = []
+        for file in os.listdir(all_dir):
+            if file_base_name in file: # FAILING
+                files.append(file)
+
+        for file in files:
+            with open(os.path.join(all_dir, file)) as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=',')
+                line_count = 0
+                for line in csv_reader:
+                    if 0 < line_count:
+                        g_data[dtype].append([float(line[0]), float(line[1])])
+                    line_count+=1
 
 
     for key in keys: # sort data type list by the x values
@@ -110,25 +127,24 @@ def main_plotter(config_file): # all data processing and plotting for one config
 
     # print(g_data[keys[1]]) # debug only
 
-    if g_data[keys[0]] == []:
+    if g_data['cal'] == []:
         print("No calibrational files found, please make sure they are in the same directory")
         quit()
 
-    for key in range(1, len(keys)): # calibrate
+    for key in range(len(keys)): # calibrate
         for line in range(len(g_data[keys[key]])):
-            g_data[keys[key]][line][1] = g_data[keys[key]][line][1] - g_data[keys[0]][line][1]
+            g_data[keys[key]][line][1] = g_data[keys[key]][line][1] - g_data['cal'][line][1]
 
     # print(keys)
 
 
     if config["compressed"]:
-        for dtype in range(1, len(keys)): # cycle through data types
+        for dtype in range(len(keys)): # cycle through data types
             result = bins_sort(g_data[keys[dtype]], config['data'][keys[dtype]]['file_name'], config_file)
             g_data[keys[dtype]] = result
 
-
     if config["inverted"]:
-        for dtype in range(1, len(keys)):
+        for dtype in range(len(keys)):
             for line in range(len(g_data[keys[dtype]])):
                 try:
                     g_data[keys[dtype]][line][1] = -g_data[keys[dtype]][line][1]
@@ -138,7 +154,7 @@ def main_plotter(config_file): # all data processing and plotting for one config
     fig = plt.figure(figsize=config["size"])
     plot = fig.add_subplot()
 
-    for dtype in range(1, len(keys)):
+    for dtype in range(len(keys)):
         npi = int(config["size"][0] * 100 / 4) # number of points for interpolation ~~ less than 4 pixels per point
         if config["data"][keys[dtype]]["show"]:
             x = []
@@ -178,10 +194,10 @@ def main_plotter(config_file): # all data processing and plotting for one config
     if config["interactive"]:
         plt.show()
 
-
-args = sys.argv
-if len(args) == 1:
-    main_plotter("config.json")
-else:
-    for i in range(1, len(args)):
-        main_plotter(args[i])
+if __name__ == "__main__":
+    args = sys.argv
+    if len(args) == 1:
+        main_plotter("config.json")
+    else:
+        for i in range(1, len(args)):
+            main_plotter(args[i])
